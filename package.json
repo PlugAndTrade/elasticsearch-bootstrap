@@ -1,0 +1,16 @@
+{
+  "name": "@plugandtrade/elasticsearch-bootstrap",
+  "version": "1.0.0",
+  "description": "Bootstrap elasticsearch from file system structures and configuration files.",
+  "main": "index.js",
+  "bin": "./cli.js",
+  "author": "oscar@plug-n-trade.com",
+  "license": "MIT",
+  "dependencies": {
+    "bluebird": "^3.4.6",
+    "meow": "^3.7.0",
+    "ramda": "^0.22.1",
+    "request": "^2.79.0",
+    "request-promise": "^4.1.1"
+  }
+}
