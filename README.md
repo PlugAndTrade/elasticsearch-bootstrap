@@ -1,15 +1,15 @@
-# Elastic bootstrap
+# Elasticsearch bootstrap
 
 ## Installation
 
 ```
-npm install --save elastic-bootstrap
+npm install --save @plugandtrade/elasticsearch-bootstrap
 ```
 
 ## Running
 
 ```
-./node_modules/.bin/elastic-bootstrap
+./node_modules/.bin/elasticsearch-bootstrap
 ```
 
 Or, edit your `package.json` to include it in your scripts, e.g.:
@@ -17,7 +17,7 @@ Or, edit your `package.json` to include it in your scripts, e.g.:
   // other stuff
   "scripts": {
     //other commands
-    "bootstrap": "./node_modules/.bin/elastic-bootstrap --indices ./indices.json"
+    "bootstrap": "./node_modules/.bin/elasticsearch-bootstrap --indices ./indices.json"
   },
   // other stuff
 ```
