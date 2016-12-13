@@ -3,7 +3,7 @@
   "version": "2.1.1",
   "description": "Bootstrap elasticsearch from file system structures and configuration files.",
   "main": "index.js",
-  "bin": "./cli.js",
+  "bin": "./bin/cli.js",
   "author": "oscar@plug-n-trade.com",
   "license": "MIT",
   "dependencies": {

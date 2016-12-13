@@ -25,7 +25,7 @@ const cli = meow(`
 
 const config = R.merge(defaultConfig, R.pick([ 'host' ])(cli.flags));
 
-const Bootstraper = require('./')(config.host);
+const Bootstraper = require('../')(config.host);
 
 var promise = Promise.resolve({});
 
