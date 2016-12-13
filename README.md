@@ -1,23 +1,25 @@
 # Elasticsearch bootstrap
 
-## Installation
+## Usage
 
+### Local
+
+Install with:
 ```
 npm install --save @plugandtrade/elasticsearch-bootstrap
 ```
 
-## Running
-
+Run with:
 ```
-./node_modules/.bin/elasticsearch-bootstrap
+./node_modules/.bin/elasticsearch-bootstrap --indices ./indices.json
 ```
 
 Or, edit your `package.json` to include it in your scripts, e.g.:
-```json
+```javascript
   // other stuff
   "scripts": {
-    //other commands
-    "bootstrap": "./node_modules/.bin/elasticsearch-bootstrap --indices ./indices.json"
+    // other commands
+    "bootstrap": "elasticsearch-bootstrap --indices ./indices.json"
   },
   // other stuff
 ```
@@ -27,6 +29,18 @@ and run it using:
 npm run bootstrap -- --host 'http://localhost:9200' 
 ```
 **Note:** the `--` are needed before the options that should be passed to the script
+
+### Global
+
+Install with:
+```
+npm install -g @plugandtrade/elasticsearch-bootstrap
+```
+
+Run with:
+```
+elasticsearch-bootstrap --indices ./indices.json
+```
 
 ## Options
 
