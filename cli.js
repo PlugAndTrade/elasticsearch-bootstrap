@@ -63,10 +63,21 @@ if (cli.flags.indices) {
 if (cli.flags.seeds) {
   promise = promise
     .then((state) => Bootstraper
-      .seedAll(cli.flags.seeds)
+      .seedAll(cli.flags.seeds, state.indices || {})
       .then((res) => {
         console.log(` * ${res.total - res.failures.length}/${res.total} documents stored`);
         return R.merge(state, { seeds: res });
+      })
+    );
+}
+
+if (cli.flags.moveAliases) {
+  promise = promise
+    .then((state) => Bootstraper
+      .moveAliases(cli.flags.moveAliases, state.indices || {})
+      .then((res) => {
+        console.log(' * moved aliases');
+        return R.merge(state, { moveAliases: res });
       })
     );
 }

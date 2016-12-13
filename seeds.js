@@ -59,7 +59,8 @@ module.exports = function (host) {
     )(doc);
   }
 
-  function indexAll(dirPath) {
+  function indexAll(dirPath, indices) {
+    var aliases = R.pipe(R.map(R.juxt([ R.prop('name'), R.prop('index') ])), R.fromPairs)(indices);
     return fs.readdirAsync(dirPath)
       .then(filterAsync(R.pipe(
         (name) => path.join(dirPath, name),
@@ -71,6 +72,10 @@ module.exports = function (host) {
           R.unnest
         )(indexNames);
       })
+      .then(R.map(R.converge(R.set(R.lensProp('_index')), [
+        R.converge(R.propOr(R.__, R.__, aliases), [ R.prop('_index'), R.prop('_index') ]),
+        R.identity
+      ])))
       .then(R.pipe(
         R.map(toBulk),
         R.join('')

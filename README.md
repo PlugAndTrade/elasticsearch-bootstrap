@@ -84,16 +84,76 @@ The index configurations file must be a valid `json` file with the following str
   "indices": [
     {
       "name": "my_index",
-      "alias": "my_alias",
+      "index": "my_index-{{timestamp}}"
       "config": {}
     }
   ]
 }
 ```
 
-The `config` property must either be an empty object or a valid index configuration.
+ * The `config` property is optional and must be a valid index configuration if set.
+ * The `index` property defaults to `[name]-{{timestamp}}`, it must be a string
+   and will be compiled as a handlebars template with the `timestamp` variable set
+   to `Date.now()`.
+ * The `name` property must be unique.
 
-The above config will create an index name `my_index-{unix_timestamp}` and move (if exists, otherwise just add) the alias `my_alias` to point to it.
+The above config will create an index named `my_index-{unix_timestamp}`.
+
+### Move aliases
+
+```
+... --move-aliases <path-to-alias-configuration>
+```
+
+The alias configurations file must be a valid `json` file with the following structure:
+
+```json
+{
+  "indices": [
+    {
+      "name": "my_index",
+      "alias": "my_alias",
+      "index": "my_index-12345"
+    }
+  ]
+}
+```
+
+ * The `alias` property defaults to `[name]`.
+ * The `name` property must be unique.
+ * The `index` property is optional and will be overwritten by the actual index name created using `--indices ...` with the same `name`.
+
+The above config will the alias `my_alias` to `my_index-12345`.
+
+The indices configuration and aliase configuration are compatible and may be merged, e.g.:
+```json
+{
+  "indices": [
+    {
+      "name": "my_index",
+      "alias": "my_alias",
+      "index": "my_index-{{timestamp}}"
+    }
+  ]
+}
+```
+
+Example:
+Indices json:
+```json
+{
+  "name": "my_index"
+}
+```
+
+Aliases json:
+```json
+{
+  "name": "my_index"
+}
+```
+
+will result in the index `my_index-123456` and the alias `my_index -> my_index-123456`.
 
 ### Seeds
 
@@ -112,3 +172,6 @@ The path must be a folder with a seed structure. A seed structure follows this s
 ```
 
 The json files must be valid json containing the data of each document.
+
+If the indices option is specified the `index_name` will be replaced by the
+actual index name created with the `name` parameter equal to `index_name`.
