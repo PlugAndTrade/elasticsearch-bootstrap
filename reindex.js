@@ -10,7 +10,7 @@ module.exports = function (host) {
       uri: R.join('/')([ host, '_reindex' ]),
       method: 'POST',
       body: {
-        source: { index: spec.alias },
+        source: { index: spec.alias, _source: { exclude: [ '_id' ] } },
         dest: { index: spec.index }
       },
       json: true
