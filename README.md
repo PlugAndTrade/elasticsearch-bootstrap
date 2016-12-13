@@ -139,7 +139,7 @@ The alias configurations file must be a valid `json` file with the following str
 
 The above config will the alias `my_alias` to `my_index-12345`.
 
-The indices configuration and aliase configuration are compatible and may be merged, e.g.:
+The indices configuration and aliases configuration are compatible and may be merged, e.g.:
 ```json
 {
   "indices": [
@@ -168,6 +168,34 @@ Aliases json:
 ```
 
 will result in the index `my_index-123456` and the alias `my_index -> my_index-123456`.
+
+### Reindex
+
+```
+... --reindex <path-to-reindex-configuration>
+```
+
+The alias configurations file must be a valid `json` file with the following structure:
+
+```json
+{
+  "indices": [
+    {
+      "name": "my_index",
+      "alias": "my_alias",
+      "index": "my_index-12345"
+    }
+  ]
+}
+```
+
+ * The `alias` property defaults to `[name]`.
+ * The `name` property must be unique.
+ * The `index` property is optional and will be overwritten by the actual index name created using `--indices ...` with the same `name`.
+
+This option will reindex all document in `alias` to `index` using the reindex API.
+
+The indices, aliases and reindex configurations are compatible and may be merged.
 
 ### Seeds
 

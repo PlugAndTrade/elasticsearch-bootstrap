@@ -14,8 +14,10 @@ const cli = meow(`
       --host URL to elasticsearch, default: ${defaultConfig.host}
       --scripts Path to stored scripts
       --index-templates Path to index templates
-      --indices Path to json file containing indices and aliases to create
+      --indices Path to json file containing indices to create
       --seeds Path to file structure containing seed data
+      --move-aliases Path to json file containing aliases to move/create
+      --reindex Whether or not data should be copied from current aliases to new indices
 
     Examples
       elastic-bootstrap --host http://localhost:9200 --index-templates ./etc/elasticsearch/index-templates/ --seeds ./etc/elasticsearch/seeds/
@@ -67,6 +69,17 @@ if (cli.flags.seeds) {
       .then((res) => {
         console.log(` * ${res.total - res.failures.length}/${res.total} documents stored`);
         return R.merge(state, { seeds: res });
+      })
+    );
+}
+
+if (cli.flags.reindex) {
+  promise = promise
+    .then(state => Bootstraper
+      .reindexAll(cli.flags.reindex, state.indices)
+      .then(res => {
+        console.log(' * Reindex done');
+        return R.merge(state, { reindex: res });
       })
     );
 }
