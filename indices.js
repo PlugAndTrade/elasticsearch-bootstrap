@@ -87,8 +87,21 @@ module.exports = function (host) {
     )(aliasDefinitions);
   }
 
+  function createAllIndexTemplates(path) {
+    return utils.withAllInDirectory(createTemplate)(path)
+      .then(res => {
+        return R.pipe(
+          R.juxt([
+            R.pipe(R.filter(R.prop('acknowledged')), R.length),
+            R.pipe(R.reject(R.prop('acknowledged')), R.length),
+          ]),
+          R.zipObj([ 'success', 'failure' ])
+        )(res);
+      });
+  }
+
   return {
-    createAllIndexTemplates: utils.withAllInDirectory(createTemplate),
+    createAllIndexTemplates,
     createIndices,
     moveAliases
   };

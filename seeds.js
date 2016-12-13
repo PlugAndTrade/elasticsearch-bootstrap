@@ -82,6 +82,19 @@ module.exports = function (host) {
           body: body
         })
         .then(JSON.parse)
+      })
+      .then(res => {
+        return R.pipe(
+          R.juxt([
+            R.pipe(R.prop('items'), R.length),
+            R.pipe(
+              R.prop('items'),
+              R.map(R.pipe(R.values, R.head)),
+              R.reject(R.propSatisfies(R.both(R.lte(200), R.gt(300)), 'status'))
+            )
+          ]),
+          R.zipObj([ 'total', 'failures' ])
+        )(res);
       });
   }
 

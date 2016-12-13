@@ -25,45 +25,53 @@ const config = R.merge(defaultConfig, R.pick([ 'host' ])(cli.flags));
 
 const Bootstraper = require('./')(config.host);
 
-var promise = Promise.resolve();
+var promise = Promise.resolve({});
 
 if (cli.flags.scripts) {
   promise = promise
-    .then(() => Bootstraper.storeAllScripts(cli.flags.scripts))
-    .then((res) => {
-      console.log(' * scripts stored');
-    });
+    .then((state) => Bootstraper
+      .storeAllScripts(cli.flags.scripts)
+      .then((res) => {
+        console.log(' * scripts stored');
+        return R.merge(state, { scripts: res });
+      })
+    );
 }
 
 if (cli.flags.indexTemplates) {
   promise = promise
-    .then(() => Bootstraper.createAllIndexTemplates(cli.flags.indexTemplates))
-    .then((res) => {
-      console.log(' * index templates created');
-    });
+    .then((state) => Bootstraper
+      .createAllIndexTemplates(cli.flags.indexTemplates)
+      .then((res) => {
+        console.log(' * index templates created');
+        return R.merge(state, { indexTemplates: res });
+      })
+    );
 }
 
 if (cli.flags.indices) {
   promise = promise
-    .then(() => Bootstraper.createIndices(cli.flags.indices))
-    .then((res) => {
-      console.log(' * indices created');
-      console.log(JSON.stringify(res, null, 2));
-    });
+    .then((state) => Bootstraper
+      .createIndices(cli.flags.indices)
+      .then((res) => {
+        console.log(' * indices created');
+        return R.merge(state, { indices: res });
+      })
+    );
 }
 
 if (cli.flags.seeds) {
   promise = promise
-    .then(() => Bootstraper.seedAll(cli.flags.seeds))
-    .then((res) => {
-      let failures = R.pipe(
-        R.prop('items'),
-        R.map(R.pipe(R.values, R.head)),
-        R.reject(R.propSatisfies(R.both(R.lte(200), R.gt(300)), 'status'))
-      )(res);
-      console.log(` * ${res.items.length} seeds finished`);
-      if (!R.isEmpty(failures)) {
-        console.log('   ' + JSON.stringify(failures, null, 2));
-      }
-    });
+    .then((state) => Bootstraper
+      .seedAll(cli.flags.seeds)
+      .then((res) => {
+        console.log(` * ${res.total - res.failures.length}/${res.total} documents stored`);
+        return R.merge(state, { seeds: res });
+      })
+    );
 }
+
+promise
+  .then((state) => {
+    console.log(JSON.stringify(state, null, 2));
+  });
