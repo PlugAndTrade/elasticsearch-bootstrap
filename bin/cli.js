@@ -29,6 +29,8 @@ const Bootstraper = require('../')(config.host);
 
 var promise = Promise.resolve({});
 
+const selectIndex = R.split(',')(cli.flags.selectIndex || '');
+
 if (cli.flags.scripts) {
   promise = promise
     .then((state) => Bootstraper
@@ -54,7 +56,7 @@ if (cli.flags.indexTemplates) {
 if (cli.flags.indices) {
   promise = promise
     .then((state) => Bootstraper
-      .createIndices(cli.flags.indices)
+      .createIndices(cli.flags.indices, selectIndex)
       .then((res) => {
         console.log(' * indices created');
         return R.merge(state, { indices: res });
@@ -76,7 +78,7 @@ if (cli.flags.seeds) {
 if (cli.flags.reindex) {
   promise = promise
     .then(state => Bootstraper
-      .reindexAll(cli.flags.reindex, state.indices)
+      .reindexAll(cli.flags.reindex, state.indices, selectIndex)
       .then(res => {
         console.log(' * Reindex done');
         return R.merge(state, { reindex: res });
@@ -87,7 +89,7 @@ if (cli.flags.reindex) {
 if (cli.flags.moveAliases) {
   promise = promise
     .then((state) => Bootstraper
-      .moveAliases(cli.flags.moveAliases, state.indices || {})
+      .moveAliases(cli.flags.moveAliases, state.indices || {}, selectIndex)
       .then((res) => {
         console.log(' * moved aliases');
         return R.merge(state, { moveAliases: res });
