@@ -29,7 +29,11 @@ const Bootstraper = require('../')(config.host);
 
 var promise = Promise.resolve({});
 
-const selectIndex = R.split(',')(cli.flags.selectIndex || '');
+const selectIndex = R.pipe(
+  R.split(','),
+  R.map(R.trim),
+  R.reject(R.isEmpty)
+)(cli.flags.selectIndex || '');
 
 if (cli.flags.scripts) {
   promise = promise
